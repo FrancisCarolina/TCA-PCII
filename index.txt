@@ -1,0 +1,43 @@
+//controle de livros
+//Livro:    titulo
+//          autor(es)
+//          editora
+//          número de páginas
+//          ano da edição
+//          idioma
+//          assunto(s)
+//tamanho de livros dinamico
+//
+// Menu
+// 1 - incluir
+// 2 - editar
+// 3 - excluir
+// 4 - listar
+// 5 - encerrar
+//
+//editar
+// 1 - titulo
+// 2 - autor(es)
+// 3 - editora
+// 4 - numero de paginas
+// 5 - ano da edição
+// 6 - idioma
+// 7 - assunto(s)
+// 8 - sair
+//editar autor/assunto
+// 1 - incluir autore
+// 2 - editar autor
+// 3 - exclir autor
+//editar/excluir autor/assunto
+// - lista de auores para realizar ação
+//
+//listar
+//1 - todos
+//2 - listar livro
+//
+//armazenado em arquivo texto
+//mensagem de sucesso
+//mensagem de erro
+//ao excluir, emitir confirmação
+//nao poluir main
+//ENTREGA 16/02/23
