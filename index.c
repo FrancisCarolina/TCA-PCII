@@ -28,7 +28,7 @@ void escolherLivro();
 void litarLivroEspecifico(Livro livro);
 void editarLivro();
 void listaEditarAtributos(int index);
-void editarAtributoSimples(int opcao);
+void editarAtributoSimples(int opcao, int index);
 void editarAtributoComposto(int opcao);
 
 int main(int argc, char const *argv[]){
@@ -330,11 +330,11 @@ void listaEditarAtributos(int index){
         printf("%s---------", livros[index].titulo);
         printf("\n (1) - Editar Titulo");
         printf("\n (2) - Editar Autores");
-        printf("\n (3) - Editar Editora\n");
+        printf("\n (3) - Editar Editora");
         printf("\n (4) - Editar Numero de Paginas");
         printf("\n (5) - Editar Ano");
-        printf("\n (6) - Editar Idioma\n");
-        printf("\n (7) - Editar Assuntos\n");
+        printf("\n (6) - Editar Idioma");
+        printf("\n (7) - Editar Assuntos");
         printf("\n (8) - Sair\n");
         printf("------------------\n");
         printf("Escolha uma opcao: \n");
@@ -343,14 +343,16 @@ void listaEditarAtributos(int index){
         if(opcao >8 || opcao<1){
             dispararErro(0);
         }else if(opcao == 1 || opcao == 3 || opcao == 4 || opcao == 5 || opcao == 6){
-            editarAtributoSimples(opcao);
+            editarAtributoSimples(opcao, index);
         }else if(opcao == 2 || opcao == 7){
             editarAtributoComposto(opcao);
         }
     }
 }
 
-void editarAtributoSimples(int opcao){
+void editarAtributoSimples(int opcao, int index){
+    char novo[100];
+    int novoNum;
     printf("\nDigite ");
     if(opcao == 1 || opcao == 4 || opcao == 5 || opcao == 6){  
         printf("o novo ");
@@ -358,13 +360,33 @@ void editarAtributoSimples(int opcao){
             printf("titulo: ");
         }else if(opcao == 4){
             printf("numero de paginas: ");
-        }else if(opcao == 4){
+        }else if(opcao == 5){
             printf("ano de lancamento: ");
         }else{
             printf("idioma: ");
         }
     }else {  
         printf("a nova editora: ");
+    }
+    if(opcao == 1 || opcao == 3 || opcao == 6){
+        gets(novo);
+    }else{
+        scanf("%d", &novoNum);
+    }
+    fflush(stdin);
+    if(opcao == 1){
+        livros[index].titulo = (char*)realloc(livros[index].titulo, strlen(novo) * sizeof(char));
+        strcpy(livros[index].titulo, novo);
+    }else if(opcao == 3){
+        livros[index].editora = (char*)realloc(livros[index].editora, strlen(novo) * sizeof(char));
+        strcpy(livros[index].editora, novo);
+    }else if(opcao == 6){
+        livros[index].idioma = (char*)realloc(livros[index].idioma, strlen(novo) * sizeof(char));
+        strcpy(livros[index].idioma, novo);
+    }else if(opcao == 4){
+        livros[index].numeroPag = novoNum;
+    }else{
+        livros[index].ano = novoNum;
     }
     printf("\n ");
 }
