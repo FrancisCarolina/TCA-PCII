@@ -1,0 +1,3 @@
+a;a;a;2000;100;a#a#a@a@a@a@
+b;b;b;2000;100;b#b#b#b@b@
+c;c;c;2000;10;c#c#ccc@ccc@ccc@cccc@
