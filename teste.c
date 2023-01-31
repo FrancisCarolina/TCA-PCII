@@ -32,6 +32,10 @@ Livro criaLivro();          //criar novo livro digitado
 void imprimeLivro(Livro livro);//imprimir livro
 void salvarArquivo();       //salvar os livros criados em um arquivo txt
 void recupararArquivo();    //recuperar dados salvos no arquivo
+void menuListar();          //mostrar lista de opcoes no listar
+void opcaoListar(int op);   //listar livros com a opcao escolhida
+int listarBiblioteca(int pause);//listar todos os livros da biblioteca
+int alterar();              //alterar livro
 
 //main
 int main(){
@@ -58,6 +62,12 @@ void mensagemErro(int erro){
         printf("ERRO: Numero de paginas invalido");
     }else if(erro == -3){
         printf("ERRO: Ano de lancamento invalido");
+    }else if(erro == -4){
+        printf("ERRO: Nao é possivel fazer essa acao");
+    }else if(erro == -5){
+        printf("ERRO: Numero do livro invalido");
+    }else if(erro == -6){
+        printf("ERRO: Nao ha livros o suficiente");
     }else if(erro == -10){
         printf("ERRO: Erro de alocacao de memoria");
     }else if(erro == -11){
@@ -80,15 +90,36 @@ void menu(){
     printf("Escolha uma opcao: \n");
 }
 void opcaoMenu(int op){
-    int erro;
+    int erro, opSub=-1;
     if(op < 1 || op > 5){
         mensagemErro(0);
     }else if(op < 5){ //opcoes entre 1 e 4
         if(op==1){
             erro = incluir();
-            if(erro<0){
-                mensagemErro(erro);
+            
+        }else if(op==2){
+            erro = alterar();
+        }else if(op==3){
+
+        }else{
+            if(qntLivros<=0){
+                erro = -2;
+                opSub = 3;
             }
+            while(opSub != 3){
+                if(qntLivros>1){
+                    menuListar();
+                    scanf("%d", &opSub);
+                    fflush(stdin);
+                    opcaoListar(opSub);
+                }else{
+                    opcaoListar(2);
+                    opSub = 3;
+                }
+            }
+        }
+        if(erro<0){
+            mensagemErro(erro);
         }
     }else{//ao escolher sair
         if(qntLivros > 0){
@@ -389,4 +420,93 @@ void recupararArquivo(){
         }
     }
     fclose(pArq);
+}
+void menuListar(){
+    system("cls");
+    printf("\n\n---------Listar Livro--------- ");
+    printf("\n (1) - Listar Livro Especifico");
+    printf("\n (2) - Listar Todos ");
+    printf("\n (3) - Sair\n");
+    printf("------------------\n");
+    printf("Escolha uma opcao: \n");
+}
+void opcaoListar(int op){
+    int erro, numLista;
+    if(op<1 || op > 3){
+        mensagemErro(0);
+    }else if(op<3){
+        system("cls");
+        if(op == 1){ //listar especifico
+            if(qntLivros==1){
+                imprimeLivro(biblioteca[0]);
+                system("pause");
+                return;
+            }
+            numLista = -1;
+            while(numLista<1 || numLista > qntLivros){
+                printf("\nDigite o numero do livro: [%d - %d]", 1, qntLivros);
+                scanf("%d", &numLista);
+                fflush(stdin);
+                if(numLista<1 || numLista > qntLivros){
+                    mensagemErro(-5);
+                    system("cls");
+                    continue; //voltar ao inicio do while, só passará para as proximas linhas ao escrever um numLista correto
+                }
+                
+                imprimeLivro(biblioteca[numLista-1]);
+                system("pause");
+            }
+
+        }else if(op == 2){ //listar todas
+            erro = listarBiblioteca(1);
+            
+        }
+        if(erro<0){
+            mensagemErro(erro);
+        }
+    }
+}
+int listarBiblioteca(int pause){
+    if(qntLivros<=0){
+        return -6;
+    }
+    system("cls");
+    for(int i = 0; i<qntLivros; i++){
+        printf("\n----- Livro (%d) -----\n", i+1);
+        imprimeLivro(biblioteca[i]);
+    }
+    if(pause == 1){
+        system("pause");
+    }
+    return 1;
+}
+int alterar(){
+    int listaLivro = -1, resp;
+    if(qntLivros <= 0 ){
+        return -6;
+    }
+    while(listaLivro < 0 || listaLivro >= qntLivros){
+        listarBiblioteca(0);
+        if(qntLivros>1){
+            printf("\nDigite o numero do livro que deseja alterar: [%d - %d]", 1, qntLivros);
+            scanf("%d", &listaLivro);
+            fflush(stdin);
+            printf("\n");
+           
+        }else{
+            listaLivro = 1;
+            system("pause");
+        }
+        listaLivro--;
+        if(listaLivro<0 || listaLivro >= qntLivros){
+            mensagemErro(-5);
+        }else{
+            resp = 1;
+        }
+    }
+    system("cls");
+    if(resp >0){
+        imprimeLivro(biblioteca[listaLivro]);
+    }
+    system("pause");
 }
