@@ -35,7 +35,9 @@ void recupararArquivo();    //recuperar dados salvos no arquivo
 void menuListar();          //mostrar lista de opcoes no listar
 void opcaoListar(int op);   //listar livros com a opcao escolhida
 int listarBiblioteca(int pause);//listar todos os livros da biblioteca
-int alterar();              //alterar livro
+int alterar();              //disparar funcoes de alterar
+int alterarLivro(int numLivro);//alterar livro
+int menuAlterarAtributo();  //menu de alterar
 
 //main
 int main(){
@@ -501,7 +503,7 @@ int alterar(){
         if(listaLivro<0 || listaLivro >= qntLivros){
             mensagemErro(-5);
         }else{
-            resp = 1;
+            resp = alterarLivro(listaLivro);
         }
     }
     system("cls");
@@ -509,4 +511,61 @@ int alterar(){
         imprimeLivro(biblioteca[listaLivro]);
     }
     system("pause");
+}
+int alterarLivro(int numLivro){
+    int atrib=1, erro = -1;
+    char op;
+    while(atrib > 0){
+        atrib = menuAlterarAtributo();
+        if(atrib == 1){
+            printf("\nDados do livro:");
+            imprimeLivro(biblioteca[numLivro]);
+            printf("\nNovo titulo do livro: ");
+            gets(biblioteca[numLivro].titulo);
+            fflush(stdin);
+        }else if(atrib==2){
+
+        }else if(atrib==3){
+            printf("\nDados do livro:");
+            imprimeLivro(biblioteca[numLivro]);
+            printf("\nNova editora do livro: ");
+            gets(biblioteca[numLivro].editora);
+            fflush(stdin);
+        }else if(atrib==4){
+            
+        }else if(atrib==5){
+            
+        }else if(atrib==6){
+            
+        }else if(atrib==7){
+            
+        }else{ //caso de sair
+            return -1;
+        }
+    }
+    return 1;
+}
+int menuAlterarAtributo(){
+    int op=-1;
+    while(op<1 || op >7){
+        system("cls");
+        printf("\nDigite o codigo do atributo que deseja alterar:");
+        printf("\n(1) - Titulo");
+        printf("\n(2) - Autores");
+        printf("\n(3) - Editora");
+        printf("\n(4) - Num de pags");
+        printf("\n(5) - Ano");
+        printf("\n(6) - Idioma");
+        printf("\n(7) - Assuntos");
+        printf("\n(8) - Sair");
+        printf("\nDigite a opcao:");
+        scanf("%d", &op);
+        fflush(stdin);
+        if(op < 1 || op>8){
+            mensagemErro(0);
+        }else{
+            return op;
+        }
+    }
+    return 1;
 }
