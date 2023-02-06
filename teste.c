@@ -38,6 +38,7 @@ int listarBiblioteca(int pause);//listar todos os livros da biblioteca
 int alterar();              //disparar funcoes de alterar
 int alterarLivro(int numLivro);//alterar livro
 int menuAlterarAtributo();  //menu de alterar
+void menuAlterarItemComposto(char *str);//menu de alteração de item composto do livro (autor || assunto)
 
 //main
 int main(){
@@ -513,7 +514,7 @@ int alterar(){
     system("pause");
 }
 int alterarLivro(int numLivro){
-    int atrib=1, erro = -1;
+    int atrib=1, erro = -1, tpAlterar;
     char op;
     while(atrib > 0){
         atrib = menuAlterarAtributo();
@@ -524,6 +525,17 @@ int alterarLivro(int numLivro){
             gets(biblioteca[numLivro].titulo);
             fflush(stdin);
         }else if(atrib==2){
+            tpAlterar = 1;
+            while(1){
+                menuAlterarItemComposto("Autor: ");
+                if(tpAlterar == 4){
+                    break;
+                }
+            }
+            system("cls");
+            printf("\nDados do livro:");
+            imprimeLivro(biblioteca[numLivro]);
+            fflush(stdin);
 
         }else if(atrib==3){
             printf("\nDados do livro:");
@@ -532,15 +544,56 @@ int alterarLivro(int numLivro){
             gets(biblioteca[numLivro].editora);
             fflush(stdin);
         }else if(atrib==4){
-            
+            printf("\nDados do livro:");
+            imprimeLivro(biblioteca[numLivro]);
+            while(erro < 0){
+                printf("\nNovo numero de paginas: ");
+                scanf("%d", &biblioteca[numLivro].numeroPag);
+                fflush(stdin);
+                if(biblioteca[numLivro].numeroPag <= 0){
+                    erro = -2;
+                    mensagemErro(erro);
+                }else{
+                    erro = 1;
+                }
+            }
         }else if(atrib==5){
-            
+            printf("\nDados do livro:");
+            imprimeLivro(biblioteca[numLivro]);
+            while(erro < 0){
+                printf("\nNovo ano de lancamento: ");
+                scanf("%d", &biblioteca[numLivro].ano);
+                fflush(stdin);
+                if(biblioteca[numLivro].numeroPag <= 0){
+                    erro = -2;
+                    mensagemErro(erro);
+                }else{
+                    erro = 1;
+                }
+            }
         }else if(atrib==6){
-            
+            printf("\nDados do livro:");
+            imprimeLivro(biblioteca[numLivro]);
+            printf("\nNovo idioma do livro: ");
+            gets(biblioteca[numLivro].idioma);
+            fflush(stdin);
         }else if(atrib==7){
             
         }else{ //caso de sair
             return -1;
+        }
+        op = 'x';
+        while(op != 's' && op != 'n'){
+            printf("\nDeseja alterar outro atributo? (s/n)");
+            scanf("%c", &op);
+            fflush(stdin);
+            op = tolower(op);
+            if(op != 's' && op != 'n'){
+                mensagemErro(0);
+            }
+        }
+        if(op == 'n'){
+            atrib = -1;
         }
     }
     return 1;
@@ -568,4 +621,12 @@ int menuAlterarAtributo(){
         }
     }
     return 1;
+}
+void menuAlterarItemComposto(char *str){
+    system("cls");
+    printf("1 - Incluir %s\n", str);
+    printf("2 - Alterar %s\n", str);
+    printf("3 - Excluir %s\n", str);
+    printf("4 - Voltar\n");
+    printf("Digite a opcao:");
 }
