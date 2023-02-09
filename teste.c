@@ -39,6 +39,8 @@ int alterar();              //disparar funcoes de alterar
 int alterarLivro(int numLivro);//alterar livro
 int menuAlterarAtributo();  //menu de alterar
 void menuAlterarItemComposto(char *str);//menu de alteração de item composto do livro (autor || assunto)
+void disparaTpAlteracaoAutor(int op, int numLivro); //dispara tp de alteracao p autor
+void adcionarAutor(int numLivro);//adciona um novo autor a um livro
 
 //main
 int main(){
@@ -527,7 +529,10 @@ int alterarLivro(int numLivro){
         }else if(atrib==2){
             tpAlterar = 1;
             while(1){
-                menuAlterarItemComposto("Autor: ");
+                menuAlterarItemComposto("Autor");
+                scanf("%d", &tpAlterar);
+                fflush(stdin);
+                disparaTpAlteracaoAutor(tpAlterar, numLivro);
                 if(tpAlterar == 4){
                     break;
                 }
@@ -629,4 +634,46 @@ void menuAlterarItemComposto(char *str){
     printf("3 - Excluir %s\n", str);
     printf("4 - Voltar\n");
     printf("Digite a opcao:");
+}
+void disparaTpAlteracaoAutor(int op, int numLivro){
+    int erro=1, opS=-1;
+    if(op < 1 || op > 4){
+        mensagemErro(0);
+    }else if(op < 4){ //nao é a op de sair
+        if(op == 1){//incluir
+            adcionarAutor(numLivro);
+            printf("\nAutor Adcionado com Sucesso\n");
+            system("pause");
+        }else if(op == 2){//alterar
+            printf("\nAutor Alterado com Sucesso\n");
+            system("pause");
+        }else{//excluir
+            printf("\nAutor Excluido com Sucesso\n");
+            system("pause");
+        }
+    }
+    if(erro <= 0){
+        mensagemErro(erro);
+    }
+}
+void adcionarAutor(int numLivro){
+    char strAux[100];
+    printf("\nNovo Autor: ");
+    gets(strAux);
+    fflush(stdin);
+    biblioteca[numLivro].autores = (char**)realloc(biblioteca[numLivro].autores, (biblioteca[numLivro].numAutores+1) * sizeof(char*));
+    
+    if(!biblioteca[numLivro].autores){
+        mensagemErro(-10);
+        exit(1);
+    }
+
+    biblioteca[numLivro].autores[biblioteca[numLivro].numAutores] = (char*)malloc((strlen(strAux)+1) * sizeof(char));
+    
+    if(!biblioteca[numLivro].autores[biblioteca[numLivro].numAutores]){
+        mensagemErro(-10);
+        exit(1);
+    }
+    strcpy(biblioteca[numLivro].autores[biblioteca[numLivro].numAutores], strAux);
+    biblioteca[numLivro].numAutores++;
 }
