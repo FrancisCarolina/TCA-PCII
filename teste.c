@@ -653,7 +653,7 @@ void disparaTpAlteracaoAutor(int op, int numLivro){
             alterarAutor(numLivro);
             system("pause");
         }else if(op == 3){//excluir
-            if(biblioteca[qntLivros].numAutores==1){
+            if(biblioteca[numLivro].numAutores==1){
                 mensagemErro(-7);
             }else{
                 excluirAutor(numLivro);
