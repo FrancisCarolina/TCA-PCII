@@ -55,6 +55,7 @@ void limparPonteirosAssuntos(int livro);
 int exclusao();                       // excluir livro;
 void excluirLivro(int livro);
 void reorganizarBiblioteca(int livro); // reorganiza a biblioteca depois de excluir
+void alterarAssunto(int livro);
 
 int main(){
 
@@ -73,7 +74,7 @@ int main(){
 }
 
 void menu(){
-
+    system("cls"); 
     printf("*****************************************************\n");
     printf("***               MENU PRINCIPAL                  ***\n");
     printf("*** - 1) Incluir Livro                            ***\n");
@@ -156,8 +157,9 @@ int inclusao(){
 
     _Biblioteca[_numLivro] = criaLivro();    
     system("cls"); // limpar a tela
-    salvarArquivo();
-    imprimeLivro(_Biblioteca[_numLivro]);    
+    //salvarArquivo();
+    imprimeLivro(_Biblioteca[_numLivro]);   
+    _numLivro++; 
     system("pause");
     return 1;
 }
@@ -189,6 +191,7 @@ int alteracao(){
         imprimeLivro(_Biblioteca[livro]);
     }
     system("PAUSE");
+    return 1;
 }
 
 int alterarLivro(int livro){
@@ -333,10 +336,9 @@ int menuAlterarEscolha(){
         fflush(stdin);
         if(op < 1 || op > 8){
             mensagemError(0);
-        } else{
-            return op;
-        }
+        } 
     }
+    return op;
 }
 
 void menuAlterarOpcoes(char *str){ //string que passamos em menuAlterarOpcoes
@@ -514,7 +516,7 @@ void excluirAssunto(int livro){
             op_sn = 'n';
             while (1)
             {
-                printf("Deseja mesmo excluir o Assunto [ %d ] (s / n)? ");
+                printf("Deseja mesmo excluir o Assunto [ %d ] (s / n)? ", opAssunto);
                 scanf("%c", &op_sn);
                 fflush(stdin);
                 op_sn = tolower(op_sn); 
@@ -564,7 +566,7 @@ void excluirAutor(int livro){
             op_sn = 'n';
             while (1)
             {
-                printf("Deseja mesmo excluir o Autor [ %d ] (s / n)? ");
+                printf("Deseja mesmo excluir o Autor [ %d ] (s / n)? ", opAutor);
                 scanf("%c", &op_sn);
                 fflush(stdin);
                 op_sn = tolower(op_sn); 
@@ -1003,13 +1005,13 @@ void salvarArquivo(){
 
     // abrir o arquivo
     Larq = fopen("ArqLivros.txt", "w");    // um dos modos de abrir o arquivo é com w de write onde ele escreve os dados. o W apaga os dados e sobrescreve
-
+    
     if (Larq == NULL){
         printf("ERRO: Nao foi possivel criar o Livro. Aconteceu alguma coisa!");
         exit (0);
     }
 
-    for (i = 0; i <= _numLivro; i++){                      // o fprintf diz em qual arquivo eu vou salvar
+    for (i = 0; i < _numLivro; i++){                      // o fprintf diz em qual arquivo eu vou salvar
         fprintf(Larq, "%s;", _Biblioteca[i].titulo);       // cada livro vai ficar numa linha. dados serão separados por ; @ e #.  
         fprintf(Larq, "%s;", _Biblioteca[i].editora);
         fprintf(Larq, "%d;", _Biblioteca[i].num_pags);
@@ -1234,6 +1236,7 @@ int exclusao(){
             printf("Exclusao Concluida com Sucesso !!\n");
             system("PAUSE");  
     }
+    return 1;
 }
 
 void excluirLivro(int livro){
