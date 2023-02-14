@@ -49,6 +49,10 @@ void adcionarAssunto(int numLivro);
 void alterarAssunto(int numLivro);
 void imprimeAssuntoLivro(Livro l);
 void excluirAssunto(int numLivro);
+void limparMemoria(); //limpar memoria que foi alocada dinamicamente
+void limparPonteiros(); //limpar ponteiros alocados dinamicamente de um livro
+void limpaPonteiroAutor(int index);
+void limpaPonteiroAssunto(int index);
 
 //main
 int main(){
@@ -61,6 +65,7 @@ int main(){
         system("cls");
         opcaoMenu(op);
     }
+    limparMemoria();
     return 0;
 }
 
@@ -938,4 +943,26 @@ void excluirAssunto(int numLivro){
             break;
         }
     }
+}
+void limparMemoria(){
+    limparPonteiros();
+    free(biblioteca);
+}
+void limparPonteiros(){
+    for(int i=0; i<qntLivros; i++){
+        limpaPonteiroAutor(i);
+        limpaPonteiroAssunto(i);
+    }
+}
+void limpaPonteiroAutor(int index){
+    for(int i=0; i<biblioteca[index].numAutores; i++){
+        free(biblioteca[index].autores[i]);
+    }
+}
+
+void limpaPonteiroAssunto(int index){
+    for(int i=0; i<biblioteca[index].numAssuntos; i++){
+        free(biblioteca[index].assuntos[i]);
+    }
+
 }
