@@ -44,6 +44,11 @@ void adcionarAutor(int numLivro);//adciona um novo autor a um livro
 void alterarAutor(int numLivro);//altera um autor a um livro especifico
 void imprimeAutorLivro(Livro l);//imprime os autores do livro l
 void excluirAutor(int numLivro);//exclui um autor de um livro especifico
+void disparaTpAlteracaoAssunto(int op, int numLivro);
+void adcionarAssunto(int numLivro);
+void alterarAssunto(int numLivro);
+void imprimeAssuntoLivro(Livro l);
+void excluirAssunto(int numLivro);
 
 //main
 int main(){
@@ -77,7 +82,9 @@ void mensagemErro(int erro){
     }else if(erro == -6){
         printf("ERRO: Nao ha livros o suficiente");
     }else if(erro == -7){
-        printf("ERRO: O livro precisa ter pelo menos um autor");
+        printf("ERRO: Exclusao de autor nao permitido");
+    }else if(erro == -8){
+        printf("ERRO: Exclusao de assunto nao permitido");
     }else if(erro == -10){
         printf("ERRO: Erro de alocacao de memoria");
     }else if(erro == -11){
@@ -588,7 +595,20 @@ int alterarLivro(int numLivro){
             gets(biblioteca[numLivro].idioma);
             fflush(stdin);
         }else if(atrib==7){
-            
+            tpAlterar = 1;
+            while(1){
+                menuAlterarItemComposto("Assunto");
+                scanf("%d", &tpAlterar);
+                fflush(stdin);
+                disparaTpAlteracaoAssunto(tpAlterar, numLivro);
+                if(tpAlterar == 4){
+                    break;
+                }
+            }
+            system("cls");
+            printf("\nDados do livro:");
+            imprimeLivro(biblioteca[numLivro]);
+            fflush(stdin);
         }else{ //caso de sair
             return -1;
         }
@@ -665,6 +685,31 @@ void disparaTpAlteracaoAutor(int op, int numLivro){
         mensagemErro(erro);
     }
 }
+void disparaTpAlteracaoAssunto(int op, int numLivro){
+    int erro=1, opS=-1;
+    if(op < 1 || op > 4){
+        mensagemErro(0);
+    }else if(op < 4){ //nao é a op de sair
+        if(op == 1){//incluir
+            adcionarAssunto(numLivro);
+            printf("\nAssunto Adcionado com Sucesso\n");
+            system("pause");
+        }else if(op == 2){//alterar
+            alterarAssunto(numLivro);
+            system("pause");
+        }else if(op == 3){//excluir
+            if(biblioteca[numLivro].numAssuntos==1){
+                mensagemErro(-8);
+            }else{
+                excluirAssunto(numLivro);
+                system("pause");
+            }
+        }
+    }
+    if(erro <= 0){
+        mensagemErro(erro);
+    }
+}
 void adcionarAutor(int numLivro){
     char strAux[100];
     printf("\nNovo Autor: ");
@@ -685,6 +730,27 @@ void adcionarAutor(int numLivro){
     }
     strcpy(biblioteca[numLivro].autores[biblioteca[numLivro].numAutores], strAux);
     biblioteca[numLivro].numAutores++;
+}
+void adcionarAssunto(int numLivro){
+    char strAux[100];
+    printf("\nNovo Assunto: ");
+    gets(strAux);
+    fflush(stdin);
+    biblioteca[numLivro].assuntos = (char**)realloc(biblioteca[numLivro].assuntos, (biblioteca[numLivro].numAssuntos+1) * sizeof(char*));
+    
+    if(!biblioteca[numLivro].assuntos){
+        mensagemErro(-10);
+        exit(1);
+    }
+
+    biblioteca[numLivro].assuntos[biblioteca[numLivro].numAssuntos] = (char*)malloc((strlen(strAux)+1) * sizeof(char));
+    
+    if(!biblioteca[numLivro].assuntos[biblioteca[numLivro].numAssuntos]){
+        mensagemErro(-10);
+        exit(1);
+    }
+    strcpy(biblioteca[numLivro].assuntos[biblioteca[numLivro].numAssuntos], strAux);
+    biblioteca[numLivro].numAssuntos++;
 }
 void alterarAutor(int numLivro){
     int opAutor=1;
@@ -730,9 +796,59 @@ void alterarAutor(int numLivro){
         }
     }
 }
+void alterarAssunto(int numLivro){
+    int opAssunto=1;
+    char opSN, strAux[100];
+    while(1){
+        system("cls");
+        imprimeAssuntoLivro(biblioteca[numLivro]);
+        if(biblioteca[numLivro].numAssuntos>1){
+            printf("\nEscolha o Assunto que deseja alterar: ");
+            scanf("%d", &opAssunto);
+            fflush(stdin);
+        }
+        if(opAssunto<1|| opAssunto>biblioteca[numLivro].numAssuntos){
+            mensagemErro(0);
+        }else{//opcao valida
+            opSN = 'n';
+            while(1){
+                printf("\nDigite a alteracao de Assunto [%d]:", opAssunto);
+                gets(strAux);
+                fflush(stdin);
+                printf("\nConfirma alteracao de [%d]? (s/n)", opAssunto);
+                scanf("%c", &opSN);
+                fflush(stdin);
+                opSN = tolower(opSN);
+                if(opSN != 's' && opSN != 'n'){
+                    mensagemErro(0);
+                    continue;
+                }
+                if(opSN == 's'){
+                    biblioteca[numLivro].assuntos[opAssunto-1] = (char*)realloc(biblioteca[numLivro].assuntos[opAssunto-1], (strlen(strAux)+1) * sizeof(char));
+                    if(!biblioteca[numLivro].assuntos[opAssunto-1]){
+                        mensagemErro(-10);
+                        exit(1);
+                    }
+                    strcpy(biblioteca[numLivro].assuntos[opAssunto-1], strAux);
+                    printf("\nAssunto Alterado com Sucesso\n");
+                }else{
+                    printf("\nAlteracao Cancelada\n");
+                }
+                break;
+            }
+            break;
+        }
+    }
+}
 void imprimeAutorLivro(Livro l){
     for(int i = 0; i < l.numAutores; i++){
         printf("\n[%d] - %s", i+1, l.autores[i]);
+    }
+}
+
+void imprimeAssuntoLivro(Livro l){
+    for(int i = 0; i < l.numAssuntos; i++){
+        printf("\n[%d] - %s", i+1, l.assuntos[i]);
     }
 }
 void excluirAutor(int numLivro){
@@ -772,6 +888,50 @@ void excluirAutor(int numLivro){
                     biblioteca[numLivro].numAutores--;
                 }
                 printf("\nAutor Excluido com Sucesso\n");
+            }else{
+                printf("\nExclusao Cancelada\n");
+            }
+            break;
+        }
+    }
+}
+void excluirAssunto(int numLivro){
+    int opAssunto = -1;
+    char opSN;
+    while(1){
+        system("cls");
+        imprimeAssuntoLivro(biblioteca[numLivro]);
+        printf("\nEscolha o assunto que deseja excluir: ");
+        scanf("%d", &opAssunto);
+        fflush(stdin);
+        if(opAssunto<1 || opAssunto>biblioteca[numLivro].numAssuntos){
+            mensagemErro(0);
+            continue;
+        }else{
+            opSN = 'n';
+            while(1){
+                printf("\nConfirmar exclusao do assunto [%d]? (s/n): ", opAssunto);
+                scanf("%c", &opSN);
+                fflush(stdin);
+                opSN = tolower(opSN);
+                if(opSN != 's' && opSN != 'n'){
+                    mensagemErro(0);
+                    continue;
+                }
+                break;
+            }
+            if(opSN == 's'){
+                if(biblioteca[numLivro].numAssuntos == opAssunto){
+                    free(biblioteca[numLivro].assuntos[opAssunto-1]);
+                    biblioteca[numLivro].numAssuntos--;
+                }else{
+                    for(int i = (opAssunto-1); i<(biblioteca[numLivro].numAssuntos-1) ;i++){
+                        biblioteca[numLivro].assuntos[i] = biblioteca[numLivro].assuntos[i+1];
+                    }
+                    free(biblioteca[numLivro].assuntos[biblioteca[numLivro].numAssuntos]);
+                    biblioteca[numLivro].numAssuntos--;
+                }
+                printf("\nAssunto Excluido com Sucesso\n");
             }else{
                 printf("\nExclusao Cancelada\n");
             }
