@@ -997,7 +997,7 @@ int excluir(){
             printf("\nDigite a Faixa que deseja excluir: [1 - %d]: ", qntLivros);
             scanf("%d", &numLivro);
             fflush(stdin);
-            printf("\n")
+            printf("\n");
             numLivro--;
             if(numLivro<0 || numLivro>qntLivros){
                 mensagemErro(0);
@@ -1040,5 +1040,5 @@ void reorganizarBiblioteca(int index){
     for(int i = index; i<qntLivros-1;i++){
         biblioteca[i] = biblioteca[i+1];
     }
-    qntLivros--
+    qntLivros--;
 }
