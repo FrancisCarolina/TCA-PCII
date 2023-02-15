@@ -53,6 +53,9 @@ void limparMemoria(); //limpar memoria que foi alocada dinamicamente
 void limparPonteiros(); //limpar ponteiros alocados dinamicamente de um livro
 void limpaPonteiroAutor(int index);
 void limpaPonteiroAssunto(int index);
+int excluir();                  //dispara as funcoes de excluir
+void excluirLivro(int index);   //excluir livro na posicao index
+void reorganizarBiblioteca(int index); //reorganizar para o inedx ser o ultimo da lista
 
 //main
 int main(){
@@ -118,11 +121,10 @@ void opcaoMenu(int op){
     }else if(op < 5){ //opcoes entre 1 e 4
         if(op==1){
             erro = incluir();
-            
         }else if(op==2){
             erro = alterar();
         }else if(op==3){
-
+            erro = excluir();
         }else{
             if(qntLivros<=0){
                 erro = -2;
@@ -965,4 +967,78 @@ void limpaPonteiroAssunto(int index){
         free(biblioteca[index].assuntos[i]);
     }
 
+}
+int excluir(){
+    int numLivro = -1, exc = 0;
+    char op;
+
+    if(qntLivros<=0){
+        return -4;
+    }
+    while(numLivro < 0 || numLivro > qntLivros){
+        system("cls");
+        if(qntLivros==1){
+            op='x';
+            while(op != 's' && op != 'n'){
+                system("cls");
+                imprimeLivro(biblioteca[0]);
+                printf("\nDeseja excluir o livro [1]? (s/n): ");
+                scanf("%c", &op);
+                fflush(stdin);
+                op = tolower(op);
+            }
+            if(op =='s'){
+                excluirLivro(0);
+                exc = 1;
+            }
+            break;
+        }else{
+            system("cls");
+            printf("\nDigite a Faixa que deseja excluir: [1 - %d]: ", qntLivros);
+            scanf("%d", &numLivro);
+            fflush(stdin);
+            printf("\n")
+            numLivro--;
+            if(numLivro<0 || numLivro>qntLivros){
+                mensagemErro(0);
+            }else{
+                op = 'x';
+                while(op != 's' && op != 'n'){
+                    imprimeLivro(biblioteca[numLivro]);
+                    printf("\nConfirma exclusao do livro [%d]? (s/n): ", numLivro+1);
+                    scanf("%c", &op);
+                    fflush(stdin);
+                    op = tolower(op);
+                    if(op != 's' && op != 'n'){
+                        mensagemErro(0);
+                    }
+                }
+                if(op=='s'){
+                    excluirLivro(numLivro);
+                    exc = 1;
+                }
+                break;
+            }
+        }
+    }
+    if(exc){
+        system("cls");
+        printf("Exclusao bem sucedida\n");
+        system("pause");
+    }
+}
+void excluirLivro(int index){
+    if(qntLivros==1 && index==qntLivros-1){ //roberto nao colocou o "-1" no if,
+        limpaPonteiroAssunto(index);        //ent nunca entrava nesse if >:)
+        limpaPonteiroAutor(index);
+        qntLivros--;
+    }else{
+        reorganizarBiblioteca(index);
+    }
+}
+void reorganizarBiblioteca(int index){
+    for(int i = index; i<qntLivros-1;i++){
+        biblioteca[i] = biblioteca[i+1];
+    }
+    qntLivros--
 }
